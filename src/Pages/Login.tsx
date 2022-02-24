@@ -29,7 +29,7 @@ const formSchema: yup.SchemaOf<LoginFormData> = yup.object({
 export const Login = () => {
 	const theme = useTheme();
 	const snackbar = useSnackbar();
-	const { setAuth } = useAuth();
+	const { updateAuth } = useAuth();
 	const navigate = useNavigate();
 
 	const {
@@ -46,11 +46,11 @@ export const Login = () => {
 
 	const onSubmit = useCallback<SubmitHandler<LoginFormData>>(
 		async (values) => {
-			client.auth
+			return client.auth
 				.login(values.email, values.password)
 				.then((res) => {
 					snackbar.toggleSnackbar("Login realizado com sucesso");
-					setAuth(res);
+					updateAuth(res);
 					navigate("/dashboard");
 				})
 				.catch((err) => {
@@ -60,7 +60,7 @@ export const Login = () => {
 					snackbar.toggleSnackbar(msg);
 				});
 		},
-		[navigate, setAuth, snackbar]
+		[navigate, updateAuth, snackbar]
 	);
 
 	return (
@@ -147,7 +147,7 @@ export const Login = () => {
 						/>
 					}
 				>
-					Enviar
+					{isSubmitting ? "Carregando" : "Enviar"}
 				</Button>
 			</Paper>
 		</Box>

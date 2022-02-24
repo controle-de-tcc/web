@@ -6,13 +6,31 @@ import { useAuth } from "Hooks/useAuth";
 export const Router = () => {
 	const { auth } = useAuth();
 
+	const guardRoute = (
+		auth: boolean,
+		element: JSX.Element,
+		to = "/login"
+	): JSX.Element => {
+		if (auth) {
+			return element;
+		}
+		return <Navigate to={to} />;
+	};
+
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path="/login" element={<Login />} />
+				<Route
+					path="/login"
+					element={guardRoute(
+						!Boolean(auth),
+						<Login />,
+						"/dashboard"
+					)}
+				/>
 				<Route
 					path="/dashboard"
-					element={auth ? <Dashboard /> : <Navigate to="/login" />}
+					element={guardRoute(Boolean(auth), <Dashboard />)}
 				/>
 				<Route path="*" element={<Navigate to="/login" />} />
 			</Routes>
