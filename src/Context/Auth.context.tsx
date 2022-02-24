@@ -1,14 +1,11 @@
 import { createContext, useEffect, useMemo, useRef, useState } from "react";
 import { LoginResponse } from "Services/auth";
+import { UserData, UserRoles } from "Types/auth";
 
 type AuthData = {
 	token: string;
-	userType: "student";
-	user: {
-		matricula: number;
-		nome: string;
-		email: string;
-	};
+	userType: UserRoles;
+	user: UserData;
 };
 
 type AuthContextData = {
@@ -53,6 +50,9 @@ export const AuthContextProvider: React.FC = ({ children }) => {
 				email: data.user.email,
 			},
 		};
+		if (newAuth.userType === UserRoles.Advisor) {
+			newAuth.user.tipoProfessor = data.user.tipoProfessor;
+		}
 		setAuth(newAuth);
 		localStorage.setItem("auth", JSON.stringify(newAuth));
 	};

@@ -14,6 +14,7 @@ import { useAuth } from "Hooks/useAuth";
 import { FilePresent, Home, Logout, Person } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
 import { getOpaque } from "Lib/helpers";
+import { AdvisorRoles } from "Types/auth";
 
 const SIDEBAR_WIDTH = 280;
 
@@ -86,7 +87,11 @@ export const Sidebar = () => {
 						fontWeight="light"
 						lineHeight={1.15}
 					>
-						{auth?.userType === "student" ? "Aluno" : "Professor"}
+						{auth?.userType === "student"
+							? "Aluno"
+							: auth?.user.tipoProfessor === AdvisorRoles.Advisor
+							? "Orientador"
+							: "Avaliador"}
 					</Typography>
 				</Box>
 			</Box>

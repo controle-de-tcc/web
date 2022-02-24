@@ -1,13 +1,10 @@
 import { api } from "Services/axiosConfig";
+import { UserData, UserRoles } from "Types/auth";
 
 export type LoginResponse = {
 	token: string;
-	userType: "student";
-	user: {
-		matricula: number;
-		nome: string;
-		email: string;
-	};
+	userType: UserRoles;
+	user: UserData;
 };
 
 export const auth = {
