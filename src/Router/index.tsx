@@ -1,8 +1,8 @@
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { Login } from "Pages/Login";
-import { Dashboard } from "Pages/Dashboard";
+import { Home } from "Pages/Home";
 import { useAuth } from "Hooks/useAuth";
-import { Sidebar } from "Components/Sidebar";
+import { Locations } from "Types/routes";
 
 export const Router = () => {
 	const { auth } = useAuth();
@@ -22,18 +22,18 @@ export const Router = () => {
 		<BrowserRouter>
 			<Routes>
 				<Route
-					path="/login"
+					path={Locations.Login}
 					element={guardRoute(
 						!Boolean(auth),
 						<Login />,
-						"/dashboard"
+						Locations.Home
 					)}
 				/>
 				<Route
-					path="/dashboard"
-					element={guardRoute(Boolean(auth), <Dashboard />)}
+					path={Locations.Home}
+					element={guardRoute(Boolean(auth), <Home />)}
 				/>
-				<Route path="*" element={<Navigate to="/login" />} />
+				<Route path="*" element={<Navigate to={Locations.Login} />} />
 			</Routes>
 		</BrowserRouter>
 	);

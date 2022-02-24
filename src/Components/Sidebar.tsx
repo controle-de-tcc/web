@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
 import { useAuth } from "Hooks/useAuth";
-import { FilePresent, Home, Logout, Person } from "@mui/icons-material";
+import { FilePresent, Home, Logout } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
 import { getOpaque } from "Lib/helpers";
 import { AdvisorRoles } from "Types/auth";
@@ -25,11 +25,6 @@ const routes = [
 		to: "/dashboard",
 	},
 	{
-		icon: <Person />,
-		label: "Orientandos",
-		to: "/advisors",
-	},
-	{
 		icon: <FilePresent />,
 		label: "Trabalhos",
 		to: "/homeworks",
@@ -39,7 +34,6 @@ const routes = [
 export const Sidebar = () => {
 	const theme = useTheme();
 	const { auth, updateAuth } = useAuth();
-
 	const location = useLocation();
 
 	return (
