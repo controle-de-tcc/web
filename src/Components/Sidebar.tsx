@@ -10,11 +10,10 @@ import {
 	useTheme,
 } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import { useAuth } from "Hooks/useAuth";
 import { FilePresent, Home, Logout, Person } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
+import { getOpaque } from "Lib/helpers";
 
 const SIDEBAR_WIDTH = 280;
 
@@ -39,8 +38,6 @@ const routes = [
 export const Sidebar = () => {
 	const theme = useTheme();
 	const { auth, updateAuth } = useAuth();
-
-	const getOpaque = (percent: string) => theme.palette.primary.main + percent;
 
 	const location = useLocation();
 
