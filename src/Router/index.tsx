@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { Login } from "Pages/Login";
 import { Dashboard } from "Pages/Dashboard";
 import { useAuth } from "Hooks/useAuth";
+import { Sidebar } from "Components/Sidebar";
 
 export const Router = () => {
 	const { auth } = useAuth();

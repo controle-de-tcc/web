@@ -13,7 +13,7 @@ type AuthData = {
 
 type AuthContextData = {
 	auth: AuthData | null;
-	updateAuth(auth: LoginResponse): void;
+	updateAuth(auth: LoginResponse | null): void;
 };
 
 export const AuthContext = createContext<AuthContextData>({
@@ -38,14 +38,19 @@ export const AuthContextProvider: React.FC = ({ children }) => {
 		}
 	}, []);
 
-	const updateAuth = (loginResponse: LoginResponse) => {
+	const updateAuth = (data: LoginResponse | null) => {
+		if (data === null) {
+			localStorage.removeItem("auth");
+			setAuth(null);
+			return;
+		}
 		const newAuth: AuthData = {
-			token: loginResponse.token,
-			userType: loginResponse.userType,
+			token: data.token,
+			userType: data.userType,
 			user: {
-				matricula: loginResponse.user.matricula,
-				nome: loginResponse.user.nome,
-				email: loginResponse.user.email,
+				matricula: data.user.matricula,
+				nome: data.user.nome,
+				email: data.user.email,
 			},
 		};
 		setAuth(newAuth);
