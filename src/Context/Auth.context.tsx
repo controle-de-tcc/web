@@ -26,7 +26,6 @@ export const AuthContextProvider: React.FC = ({ children }) => {
 	useEffect(() => {
 		if (firstRender.current) {
 			const savedAuth = localStorage.getItem("auth");
-			console.log("firstRender", savedAuth);
 			if (savedAuth) {
 				const newAuth = JSON.parse(savedAuth);
 				setAuth(newAuth);

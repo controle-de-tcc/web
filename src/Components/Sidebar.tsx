@@ -12,9 +12,10 @@ import {
 import Drawer from "@mui/material/Drawer";
 import { useAuth } from "Hooks/useAuth";
 import { FilePresent, Home, Logout } from "@mui/icons-material";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { getOpaque } from "Lib/helpers";
 import { AdvisorRoles } from "Types/auth";
+import { Locations } from "Types/routes";
 
 const SIDEBAR_WIDTH = 280;
 
@@ -22,12 +23,12 @@ const routes = [
 	{
 		icon: <Home />,
 		label: "Início",
-		to: "/dashboard",
+		to: Locations.Home,
 	},
 	{
 		icon: <FilePresent />,
-		label: "Trabalhos",
-		to: "/homeworks",
+		label: "Projetos",
+		to: Locations.Projects,
 	},
 ];
 
@@ -99,32 +100,40 @@ export const Sidebar = () => {
 				}}
 			>
 				{routes.map((route) => (
-					<ListItem
-						button
-						sx={{
-							padding: "0 8px",
-							height: "48px",
-							borderRadius: theme.spacing(1.25),
-							backgroundColor:
-								location.pathname === route.to
-									? getOpaque("80")
-									: "transparent",
-						}}
+					<Link
+						key={route.to}
+						to={route.to}
+						style={{ textDecoration: "none" }}
 					>
-						<ListItemIcon
-							color="white"
-							sx={{ minWidth: 0, marginRight: "8px" }}
-						>
-							<Icon sx={{ color: "white" }}>{route.icon}</Icon>
-						</ListItemIcon>
-						<ListItemText
-							primary={route.label}
-							primaryTypographyProps={{
-								fontSize: "20px",
-								color: "white",
+						<ListItem
+							button
+							sx={{
+								padding: "0 8px",
+								height: "48px",
+								borderRadius: theme.spacing(1.25),
+								backgroundColor:
+									location.pathname === route.to
+										? getOpaque("80")
+										: "transparent",
 							}}
-						/>
-					</ListItem>
+						>
+							<ListItemIcon
+								color="white"
+								sx={{ minWidth: 0, marginRight: "8px" }}
+							>
+								<Icon sx={{ color: "white" }}>
+									{route.icon}
+								</Icon>
+							</ListItemIcon>
+							<ListItemText
+								primary={route.label}
+								primaryTypographyProps={{
+									fontSize: "20px",
+									color: "white",
+								}}
+							/>
+						</ListItem>
+					</Link>
 				))}
 			</List>
 			<ListItem

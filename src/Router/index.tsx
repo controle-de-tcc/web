@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { Login } from "Pages/Login";
 import { Home } from "Pages/Home";
+import { Projects } from "Pages/Projects";
 import { useAuth } from "Hooks/useAuth";
 import { Locations } from "Types/routes";
 
@@ -32,6 +33,10 @@ export const Router = () => {
 				<Route
 					path={Locations.Home}
 					element={guardRoute(Boolean(auth), <Home />)}
+				/>
+				<Route
+					path={Locations.Projects}
+					element={guardRoute(Boolean(auth), <Projects />)}
 				/>
 				<Route path="*" element={<Navigate to={Locations.Login} />} />
 			</Routes>

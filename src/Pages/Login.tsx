@@ -29,7 +29,7 @@ const formSchema: yup.SchemaOf<LoginFormData> = yup.object({
 
 export const Login = () => {
 	const theme = useTheme();
-	const snackbar = useSnackbar();
+	const { toggleSnackbar } = useSnackbar();
 	const { updateAuth } = useAuth();
 	const navigate = useNavigate();
 
@@ -51,7 +51,7 @@ export const Login = () => {
 			return client.auth
 				.login(values.email, values.password)
 				.then((res) => {
-					snackbar.toggleSnackbar("Login realizado com sucesso");
+					toggleSnackbar("Login realizado com sucesso");
 					updateAuth(res);
 					navigate("/dashboard");
 				})
@@ -59,10 +59,10 @@ export const Login = () => {
 					const msg =
 						err.response?.data.msg ??
 						"Algo deu errado, tente novamente";
-					snackbar.toggleSnackbar(msg);
+					toggleSnackbar(msg);
 				});
 		},
-		[navigate, updateAuth, snackbar]
+		[navigate, updateAuth, toggleSnackbar]
 	);
 
 	return (

@@ -8,10 +8,10 @@ export type LoginResponse = {
 };
 
 export const auth = {
-	async login(email: string, password: string): Promise<LoginResponse> {
+	async login(email: string, senha: string): Promise<LoginResponse> {
 		const { data } = await api.post("/auth/login", {
 			email,
-			password,
+			senha,
 		});
 
 		return data;
