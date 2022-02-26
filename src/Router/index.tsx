@@ -4,6 +4,7 @@ import { Home } from "Pages/Home";
 import { Projects } from "Pages/Projects";
 import { useAuth } from "Hooks/useAuth";
 import { Locations } from "Types/routes";
+import { AdvisorRoles } from "Types/auth";
 
 export const Router = () => {
 	const { auth } = useAuth();
@@ -18,6 +19,8 @@ export const Router = () => {
 		}
 		return <Navigate to={to} />;
 	};
+
+	const isAdvisor = auth && auth.user?.tipoProfessor === AdvisorRoles.Advisor;
 
 	return (
 		<BrowserRouter>
@@ -36,7 +39,11 @@ export const Router = () => {
 				/>
 				<Route
 					path={Locations.Projects}
-					element={guardRoute(Boolean(auth), <Projects />)}
+					element={guardRoute(Boolean(isAdvisor), <Projects />)}
+				/>
+				<Route
+					path={Locations.Advisors}
+					element={guardRoute(Boolean(isAdvisor), <Projects />)}
 				/>
 				<Route path="*" element={<Navigate to={Locations.Login} />} />
 			</Routes>

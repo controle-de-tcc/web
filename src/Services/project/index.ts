@@ -1,4 +1,6 @@
 import { api } from "Services/axiosConfig";
+import { UserData } from "Types/auth";
+import { ProjectData } from "Types/project";
 
 export type ProjectCreateBody = {
 	titulo: string;
@@ -6,9 +8,9 @@ export type ProjectCreateBody = {
 };
 
 export type ProjectListResponse = {
-	id: string;
-	titulo: string;
-	mat_aluno: number;
+	id: ProjectData["id"];
+	titulo: ProjectData["titulo"];
+	aluno: Omit<UserData, "tipoProfessor">;
 };
 
 export const project = {
