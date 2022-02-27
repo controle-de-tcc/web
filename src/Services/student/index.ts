@@ -4,6 +4,8 @@ export type StudentListResponse = {
 	matricula: number;
 	nome: string;
 	email: string;
+	createdAt: Date;
+	updatedAt: Date;
 };
 
 export const student = {

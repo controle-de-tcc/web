@@ -14,6 +14,8 @@ export type AdvisorListResponse = {
 	email: string;
 	nome: string;
 	tipoProfessor: AdvisorRoles;
+	createdAt: Date;
+	updatedAt: Date;
 };
 
 export const advisor = {
