@@ -74,7 +74,7 @@ export const Projects = () => {
 				<Add sx={{ marginRight: "8px" }} />
 				Cadastrar novo projeto
 			</Button>
-			<Paper sx={{ height: "400px", marginTop: "16px" }}>
+			<Paper sx={{ minHeight: "400px", marginTop: "16px" }}>
 				<DataGrid
 					rows={projects}
 					columns={columns}

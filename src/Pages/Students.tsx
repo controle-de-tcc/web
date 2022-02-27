@@ -1,37 +1,38 @@
 import { Add } from "@mui/icons-material";
-import { Button, capitalize, Paper, Typography } from "@mui/material";
+import { Button, Paper, Typography } from "@mui/material";
 import { DataGrid, GridColumns } from "@mui/x-data-grid";
-import { NewAdvisor } from "Components/NewAdvisor";
+import { NewStudent } from "Components/NewStudent";
 import { PageContainer } from "Components/PageContainer";
 import { useSnackbar } from "Hooks/useSnackbar";
 import { useCallback, useEffect, useState } from "react";
 import { client } from "Services";
-import { AdvisorListResponse } from "Services/advisor";
+import { StudentListResponse } from "Services/student";
+import dayjs from "dayjs";
 
 const columns: GridColumns = [
-	{ field: "siape", headerName: "SIAPE", flex: 1 },
+	{ field: "matricula", headerName: "Matrícula", flex: 1 },
 	{ field: "nome", headerName: "Nome", flex: 2 },
 	{ field: "email", headerName: "E-mail", flex: 3 },
 	{
-		field: "tipoProfessor",
-		headerName: "Tipo",
+		field: "createdAt",
+		headerName: "Criado em",
 		flex: 1,
-		valueGetter: ({ row }: { row: AdvisorListResponse }) =>
-			capitalize(row.tipoProfessor),
+		valueGetter: ({ row }: { row: StudentListResponse }) =>
+			dayjs(row.createdAt).format("DD/MM/YYYY HH:mm"),
 	},
 ];
 
-export const Advisors = () => {
+export const Students = () => {
 	const { toggleSnackbar } = useSnackbar();
 
-	const [advisors, setAdvisors] = useState<Array<AdvisorListResponse>>([]);
+	const [students, setStudents] = useState<Array<StudentListResponse>>([]);
 	const [dialogOpen, setDialogOpen] = useState(false);
 
-	const listAdvisors = useCallback(() => {
-		client.advisor
+	const listStudents = useCallback(() => {
+		client.student
 			.list()
 			.then((res) => {
-				setAdvisors(res);
+				setStudents(res);
 			})
 			.catch((err) => {
 				const msg =
@@ -42,28 +43,28 @@ export const Advisors = () => {
 	}, [toggleSnackbar]);
 
 	useEffect(() => {
-		listAdvisors();
-	}, [listAdvisors]);
+		listStudents();
+	}, [listStudents]);
 
 	const handleDialog = useCallback(
 		(value: boolean, update = false) => {
 			setDialogOpen(value);
 			if (update) {
-				listAdvisors();
+				listStudents();
 			}
 		},
-		[listAdvisors]
+		[listStudents]
 	);
 
 	return (
-		<PageContainer title="Professores">
+		<PageContainer title="Alunos">
 			<Typography
 				variant="h4"
 				color="primary.main"
 				fontWeight="500"
 				sx={{ marginBottom: "16px" }}
 			>
-				Professores
+				Alunos
 			</Typography>
 			<Button
 				type="button"
@@ -72,20 +73,20 @@ export const Advisors = () => {
 				color="primary"
 			>
 				<Add sx={{ marginRight: "8px" }} />
-				Cadastrar novo professor
+				Cadastrar novo aluno
 			</Button>
 			<Paper sx={{ minHeight: "400px", marginTop: "16px" }}>
 				<DataGrid
-					rows={advisors}
+					rows={students}
 					columns={columns}
 					pageSize={5}
 					rowsPerPageOptions={[5]}
 					checkboxSelection
-					getRowId={(row) => row.siape}
+					getRowId={(row) => row.matricula}
 				/>
 			</Paper>
 			{/* Isso é um dialog */}
-			<NewAdvisor dialogOpen={dialogOpen} handleDialog={handleDialog} />
+			<NewStudent dialogOpen={dialogOpen} handleDialog={handleDialog} />
 		</PageContainer>
 	);
 };
