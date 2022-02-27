@@ -72,7 +72,7 @@ export const NewAdvisor = ({ dialogOpen, handleDialog }: NewAdvisorProps) => {
 					nome: values.name,
 					email: values.email,
 					senha: values.password,
-					tipoProfessor: values.type,
+					tipo_professor: values.type,
 				})
 				.then(() => {
 					toggleSnackbar("Professor cadastrado com sucesso");

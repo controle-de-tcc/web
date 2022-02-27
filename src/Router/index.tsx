@@ -22,7 +22,8 @@ export const Router = () => {
 		return <Navigate to={to} />;
 	};
 
-	const isAdvisor = auth && auth.user?.tipoProfessor === AdvisorRoles.Advisor;
+	const isAdvisor =
+		auth && auth.user?.tipo_professor === AdvisorRoles.Advisor;
 
 	return (
 		<BrowserRouter>

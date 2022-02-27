@@ -36,14 +36,14 @@ const routes = [
 		label: "Profesores",
 		to: Locations.Advisors,
 		hasPermissions: (auth: AuthData) =>
-			auth.user?.tipoProfessor === AdvisorRoles.Advisor,
+			auth.user?.tipo_professor === AdvisorRoles.Advisor,
 	},
 	{
 		icon: <School />,
 		label: "Alunos",
 		to: Locations.Students,
 		hasPermissions: (auth: AuthData) =>
-			auth.user?.tipoProfessor === AdvisorRoles.Advisor,
+			auth.user?.tipo_professor === AdvisorRoles.Advisor,
 	},
 ];
 
@@ -99,7 +99,7 @@ export const Sidebar = () => {
 					>
 						{auth?.userType === "student"
 							? "Aluno"
-							: auth?.user.tipoProfessor === AdvisorRoles.Advisor
+							: auth?.user.tipo_professor === AdvisorRoles.Advisor
 							? "Orientador"
 							: "Avaliador"}
 					</Typography>

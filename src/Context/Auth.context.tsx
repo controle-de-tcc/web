@@ -1,6 +1,6 @@
 import { createContext, useEffect, useMemo, useRef, useState } from "react";
 import { LoginResponse } from "Services/auth";
-import { AuthData, UserRoles } from "Types/auth";
+import { AuthData } from "Types/auth";
 
 type AuthContextData = {
 	auth: AuthData | null;
@@ -37,15 +37,20 @@ export const AuthContextProvider: React.FC = ({ children }) => {
 		const newAuth: AuthData = {
 			token: data.token,
 			userType: data.userType,
-			user: {
-				matricula: data.user.matricula,
-				nome: data.user.nome,
-				email: data.user.email,
-			},
+			user:
+				"siape" in data.user
+					? {
+							siape: data.user.siape,
+							nome: data.user.nome,
+							email: data.user.email,
+							tipo_professor: data.user.tipo_professor,
+					  }
+					: {
+							matricula: data.user.matricula,
+							nome: data.user.nome,
+							email: data.user.email,
+					  },
 		};
-		if (newAuth.userType === UserRoles.Advisor) {
-			newAuth.user.tipoProfessor = data.user.tipoProfessor;
-		}
 		setAuth(newAuth);
 		localStorage.setItem("auth", JSON.stringify(newAuth));
 	};

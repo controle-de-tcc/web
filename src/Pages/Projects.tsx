@@ -8,17 +8,45 @@ import { useSnackbar } from "Hooks/useSnackbar";
 import { useCallback, useEffect, useState } from "react";
 import { client } from "Services";
 import { ProjectListResponse } from "Services/project";
+import dayjs from "dayjs";
 
 const columns: GridColumns = [
-	{ field: "id", headerName: "ID", width: 70 },
-	{ field: "titulo", headerName: "Título", width: 200 },
+	{ field: "id", headerName: "ID", flex: 1 },
+	{ field: "titulo", headerName: "Título", flex: 1 },
 	{
 		field: "aluno",
 		headerName: "Aluno",
-		minWidth: 200,
+		flex: 1,
+		valueGetter: ({ row }: { row: ProjectListResponse }) => row.aluno.nome,
+	},
+	{
+		field: "orientador",
+		headerName: "Orientador",
 		flex: 1,
 		valueGetter: ({ row }: { row: ProjectListResponse }) =>
-			`${row.aluno.nome}, Matrícula ${row.aluno.matricula}`,
+			row.orientador.nome,
+	},
+	{
+		field: "avaliadores",
+		headerName: "Avaliadores",
+		flex: 2,
+		valueGetter: ({ row }: { row: ProjectListResponse }) =>
+			row.avaliadores
+				.map((x) => x.avaliador.nome)
+				.reduce(
+					(acc, cur, idx) =>
+						(acc +=
+							cur +
+							(idx < row.avaliadores.length - 1 ? ", " : "")),
+					""
+				),
+	},
+	{
+		field: "created_at",
+		headerName: "Criado em",
+		flex: 1,
+		valueGetter: ({ row }: { row: ProjectListResponse }) =>
+			dayjs(row.created_at).format("DD/MM/YYYY HH:mm"),
 	},
 ];
 

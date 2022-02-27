@@ -15,11 +15,11 @@ const columns: GridColumns = [
 	{ field: "nome", headerName: "Nome", flex: 2 },
 	{ field: "email", headerName: "E-mail", flex: 3 },
 	{
-		field: "createdAt",
+		field: "created_at",
 		headerName: "Criado em",
 		flex: 1,
 		valueGetter: ({ row }: { row: StudentListResponse }) =>
-			dayjs(row.createdAt).format("DD/MM/YYYY HH:mm"),
+			dayjs(row.created_at).format("DD/MM/YYYY HH:mm"),
 	},
 ];
 

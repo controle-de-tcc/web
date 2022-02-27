@@ -8,17 +8,25 @@ import { useSnackbar } from "Hooks/useSnackbar";
 import { useCallback, useEffect, useState } from "react";
 import { client } from "Services";
 import { AdvisorListResponse } from "Services/advisor";
+import dayjs from "dayjs";
 
 const columns: GridColumns = [
 	{ field: "siape", headerName: "SIAPE", flex: 1 },
 	{ field: "nome", headerName: "Nome", flex: 2 },
 	{ field: "email", headerName: "E-mail", flex: 3 },
 	{
-		field: "tipoProfessor",
+		field: "tipo_professor",
 		headerName: "Tipo",
 		flex: 1,
 		valueGetter: ({ row }: { row: AdvisorListResponse }) =>
-			capitalize(row.tipoProfessor),
+			capitalize(row.tipo_professor),
+	},
+	{
+		field: "created_at",
+		headerName: "Criado em",
+		flex: 1,
+		valueGetter: ({ row }: { row: AdvisorListResponse }) =>
+			dayjs(row.created_at).format("DD/MM/YYYY HH:mm"),
 	},
 ];
 

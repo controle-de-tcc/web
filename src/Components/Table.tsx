@@ -8,7 +8,6 @@ export const Table = (props: DataGridProps) => {
 				localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
 				pageSize={5}
 				rowsPerPageOptions={[5]}
-				checkboxSelection
 				{...props}
 			/>
 		</Paper>

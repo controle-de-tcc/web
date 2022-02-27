@@ -9,10 +9,11 @@ export enum AdvisorRoles {
 }
 
 export type UserData = {
-	matricula: number;
+	matricula?: number;
+	siape?: number;
 	nome: string;
 	email: string;
-	tipoProfessor?: AdvisorRoles;
+	tipo_professor?: AdvisorRoles;
 };
 
 export type AuthData = {

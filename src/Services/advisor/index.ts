@@ -6,15 +6,15 @@ export type AdvisorCreateBody = {
 	nome: string;
 	senha: string;
 	siape: number;
-	tipoProfessor: AdvisorRoles;
+	tipo_professor: AdvisorRoles;
 };
 
 export type AdvisorListResponse = {
 	siape: number;
 	email: string;
 	nome: string;
-	tipoProfessor: AdvisorRoles;
-	createdAt: Date;
+	tipo_professor: AdvisorRoles;
+	created_at: Date;
 	updatedAt: Date;
 };
 

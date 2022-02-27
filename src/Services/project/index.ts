@@ -1,17 +1,22 @@
 import { api } from "Services/axiosConfig";
+import { AdvisorData } from "Types/advisor";
 import { StudentData } from "Types/student";
 
 export type ProjectCreateBody = {
 	titulo: string;
 	mat_aluno: number;
+	siape_orientador: number;
+	avaliadores: number[];
 };
 
 export type ProjectListResponse = {
 	id: string;
 	titulo: string;
 	aluno: StudentData;
-	createdAt: Date;
-	updatedAt: Date;
+	orientador: AdvisorData;
+	avaliadores: { avaliador: AdvisorData }[];
+	created_at: Date;
+	updated_at: Date;
 };
 
 export const project = {

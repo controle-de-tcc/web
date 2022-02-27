@@ -11,7 +11,7 @@ export type StudentListResponse = {
 	matricula: number;
 	nome: string;
 	email: string;
-	createdAt: Date;
+	created_at: Date;
 	updatedAt: Date;
 };
 
