@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import { client } from "Services";
 import { ProjectListResponse } from "Services/project";
 import dayjs from "dayjs";
+import { useAuth } from "Hooks/useAuth";
 
 const columns: GridColumns = [
 	{ field: "id", headerName: "ID", flex: 1 },
@@ -50,15 +51,22 @@ const columns: GridColumns = [
 	},
 ];
 
-export const Projects = () => {
+type ProjectsProps = {
+	isAdvisor: boolean;
+};
+
+export const Projects = ({ isAdvisor }: ProjectsProps) => {
 	const { toggleSnackbar } = useSnackbar();
+	const { auth } = useAuth();
 
 	const [projects, setProjects] = useState<Array<ProjectListResponse>>([]);
 	const [dialogOpen, setDialogOpen] = useState(false);
 
 	const listProjects = useCallback(() => {
-		client.project
-			.list()
+		let query = client.project.list;
+		if (!isAdvisor)
+			query = () => client.project.list(Number(auth?.user.siape));
+		query()
 			.then((res) => {
 				setProjects(res);
 			})
@@ -68,7 +76,7 @@ export const Projects = () => {
 					"Algo deu errado, tente novamente";
 				toggleSnackbar(msg);
 			});
-	}, [toggleSnackbar]);
+	}, [auth, isAdvisor, toggleSnackbar]);
 
 	useEffect(() => {
 		listProjects();
@@ -94,15 +102,17 @@ export const Projects = () => {
 			>
 				Projetos
 			</Typography>
-			<Button
-				type="button"
-				onClick={() => setDialogOpen(true)}
-				variant="contained"
-				color="primary"
-			>
-				<Add sx={{ marginRight: "8px" }} />
-				Cadastrar novo projeto
-			</Button>
+			{isAdvisor && (
+				<Button
+					type="button"
+					onClick={() => setDialogOpen(true)}
+					variant="contained"
+					color="primary"
+				>
+					<Add sx={{ marginRight: "8px" }} />
+					Cadastrar novo projeto
+				</Button>
+			)}
 			<Table rows={projects} columns={columns} />
 			{/* Isso é um dialog */}
 			<NewProject dialogOpen={dialogOpen} handleDialog={handleDialog} />

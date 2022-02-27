@@ -6,7 +6,7 @@ import { Advisors } from "Pages/Advisors";
 import { Students } from "Pages/Students";
 import { useAuth } from "Hooks/useAuth";
 import { Locations } from "Types/routes";
-import { AdvisorRoles } from "Types/auth";
+import { AdvisorRoles, UserRoles } from "Types/auth";
 
 export const Router = () => {
 	const { auth } = useAuth();
@@ -22,8 +22,9 @@ export const Router = () => {
 		return <Navigate to={to} />;
 	};
 
-	const isAdvisor =
-		auth && auth.user?.tipo_professor === AdvisorRoles.Advisor;
+	const isAdvisor = Boolean(
+		auth && auth.user?.tipo_professor === AdvisorRoles.Advisor
+	);
 
 	return (
 		<BrowserRouter>
@@ -42,15 +43,18 @@ export const Router = () => {
 				/>
 				<Route
 					path={Locations.Projects}
-					element={guardRoute(Boolean(isAdvisor), <Projects />)}
+					element={guardRoute(
+						auth?.userType === UserRoles.Advisor,
+						<Projects isAdvisor={isAdvisor} />
+					)}
 				/>
 				<Route
 					path={Locations.Advisors}
-					element={guardRoute(Boolean(isAdvisor), <Advisors />)}
+					element={guardRoute(isAdvisor, <Advisors />)}
 				/>
 				<Route
 					path={Locations.Students}
-					element={guardRoute(Boolean(isAdvisor), <Students />)}
+					element={guardRoute(isAdvisor, <Students />)}
 				/>
 				<Route path="*" element={<Navigate to={Locations.Login} />} />
 			</Routes>

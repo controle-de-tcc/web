@@ -24,9 +24,10 @@ export const project = {
 		return api.post("/projeto", body);
 	},
 
-	async list(): Promise<Array<ProjectListResponse>> {
-		const { data } = await api.get("/projeto");
-
+	async list(siape?: number): Promise<Array<ProjectListResponse>> {
+		let url = "/projeto";
+		if (siape) url += `/por-avaliador/${siape}`;
+		const { data } = await api.get(url);
 		return data;
 	},
 };
