@@ -13,7 +13,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useSnackbar } from "Hooks/useSnackbar";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { client } from "Services";
 
 type StudentFormData = {
@@ -41,12 +41,15 @@ export const NewStudent = ({ dialogOpen, handleDialog }: NewStudentProps) => {
 
 	const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
-	const defaultValues = {
-		registration: "",
-		name: "",
-		email: "",
-		password: "",
-	};
+	const defaultValues = useMemo(
+		() => ({
+			registration: "",
+			name: "",
+			email: "",
+			password: "",
+		}),
+		[]
+	);
 
 	const {
 		control,
@@ -69,6 +72,7 @@ export const NewStudent = ({ dialogOpen, handleDialog }: NewStudentProps) => {
 				})
 				.then(() => {
 					toggleSnackbar("Aluno cadastrado com sucesso");
+					reset(defaultValues);
 					handleDialog(false, true);
 				})
 				.catch((err) => {
@@ -78,7 +82,7 @@ export const NewStudent = ({ dialogOpen, handleDialog }: NewStudentProps) => {
 					toggleSnackbar(msg);
 				});
 		},
-		[handleDialog, toggleSnackbar]
+		[defaultValues, handleDialog, reset, toggleSnackbar]
 	);
 
 	const handleClose = useCallback(() => {

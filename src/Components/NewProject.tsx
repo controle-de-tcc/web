@@ -21,7 +21,7 @@ import {
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useSnackbar } from "Hooks/useSnackbar";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { StudentData } from "Types/student";
 import { client } from "Services";
 import { AdvisorData } from "Types/advisor";
@@ -86,11 +86,14 @@ export const NewProject = ({ dialogOpen, handleDialog }: NewProjectProps) => {
 			});
 	}, [toggleSnackbar]);
 
-	const defaultValues = {
-		title: "",
-		student: -1,
-		reviewers: [],
-	};
+	const defaultValues = useMemo(
+		() => ({
+			title: "",
+			student: -1,
+			reviewers: [],
+		}),
+		[]
+	);
 
 	const {
 		control,
@@ -113,6 +116,7 @@ export const NewProject = ({ dialogOpen, handleDialog }: NewProjectProps) => {
 				})
 				.then(() => {
 					toggleSnackbar("Projeto cadastrado com sucesso");
+					reset(defaultValues);
 					handleDialog(false, true);
 				})
 				.catch((err) => {
@@ -122,7 +126,7 @@ export const NewProject = ({ dialogOpen, handleDialog }: NewProjectProps) => {
 					toggleSnackbar(msg);
 				});
 		},
-		[auth, handleDialog, toggleSnackbar]
+		[auth, defaultValues, handleDialog, reset, toggleSnackbar]
 	);
 
 	const handleClose = useCallback(() => {

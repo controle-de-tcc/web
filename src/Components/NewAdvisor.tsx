@@ -15,7 +15,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useSnackbar } from "Hooks/useSnackbar";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { client } from "Services";
 import { AdvisorRoles } from "Types/auth";
 
@@ -46,13 +46,16 @@ export const NewAdvisor = ({ dialogOpen, handleDialog }: NewAdvisorProps) => {
 
 	const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
-	const defaultValues = {
-		siape: "",
-		name: "",
-		email: "",
-		password: "",
-		type: AdvisorRoles.Advisor,
-	};
+	const defaultValues = useMemo(
+		() => ({
+			siape: "",
+			name: "",
+			email: "",
+			password: "",
+			type: AdvisorRoles.Advisor,
+		}),
+		[]
+	);
 
 	const {
 		control,
@@ -76,6 +79,7 @@ export const NewAdvisor = ({ dialogOpen, handleDialog }: NewAdvisorProps) => {
 				})
 				.then(() => {
 					toggleSnackbar("Professor cadastrado com sucesso");
+					reset(defaultValues);
 					handleDialog(false, true);
 				})
 				.catch((err) => {
@@ -85,7 +89,7 @@ export const NewAdvisor = ({ dialogOpen, handleDialog }: NewAdvisorProps) => {
 					toggleSnackbar(msg);
 				});
 		},
-		[handleDialog, toggleSnackbar]
+		[defaultValues, handleDialog, reset, toggleSnackbar]
 	);
 
 	const handleClose = useCallback(() => {
