@@ -1,12 +1,6 @@
 import { createContext, useEffect, useMemo, useRef, useState } from "react";
 import { LoginResponse } from "Services/auth";
-import { UserData, UserRoles } from "Types/auth";
-
-type AuthData = {
-	token: string;
-	userType: UserRoles;
-	user: UserData;
-};
+import { AuthData, UserRoles } from "Types/auth";
 
 type AuthContextData = {
 	auth: AuthData | null;

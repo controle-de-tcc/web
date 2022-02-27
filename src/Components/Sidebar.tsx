@@ -11,10 +11,10 @@ import {
 } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
 import { useAuth } from "Hooks/useAuth";
-import { FilePresent, Home, Logout } from "@mui/icons-material";
+import { FilePresent, Home, Logout, Person, School } from "@mui/icons-material";
 import { Link, useLocation } from "react-router-dom";
 import { getOpaque } from "Lib/helpers";
-import { AdvisorRoles } from "Types/auth";
+import { AdvisorRoles, AuthData, UserRoles } from "Types/auth";
 import { Locations } from "Types/routes";
 
 const SIDEBAR_WIDTH = 280;
@@ -29,6 +29,21 @@ const routes = [
 		icon: <FilePresent />,
 		label: "Projetos",
 		to: Locations.Projects,
+		hasPermissions: (auth: AuthData) => auth.userType === UserRoles.Advisor,
+	},
+	{
+		icon: <Person />,
+		label: "Profesores",
+		to: Locations.Advisors,
+		hasPermissions: (auth: AuthData) =>
+			auth.user?.tipoProfessor === AdvisorRoles.Advisor,
+	},
+	{
+		icon: <School />,
+		label: "Alunos",
+		to: Locations.Students,
+		hasPermissions: (auth: AuthData) =>
+			auth.user?.tipoProfessor === AdvisorRoles.Advisor,
 	},
 ];
 
@@ -99,42 +114,46 @@ export const Sidebar = () => {
 					marginTop: "16px",
 				}}
 			>
-				{routes.map((route) => (
-					<Link
-						key={route.to}
-						to={route.to}
-						style={{ textDecoration: "none" }}
-					>
-						<ListItem
-							button
-							sx={{
-								padding: "0 8px",
-								height: "48px",
-								borderRadius: theme.spacing(1.25),
-								backgroundColor:
-									location.pathname === route.to
-										? getOpaque("80")
-										: "transparent",
-							}}
-						>
-							<ListItemIcon
-								color="white"
-								sx={{ minWidth: 0, marginRight: "8px" }}
+				{routes.map(
+					(route) =>
+						(!route?.hasPermissions ||
+							(auth && route.hasPermissions(auth))) && (
+							<Link
+								key={route.to}
+								to={route.to}
+								style={{ textDecoration: "none" }}
 							>
-								<Icon sx={{ color: "white" }}>
-									{route.icon}
-								</Icon>
-							</ListItemIcon>
-							<ListItemText
-								primary={route.label}
-								primaryTypographyProps={{
-									fontSize: "20px",
-									color: "white",
-								}}
-							/>
-						</ListItem>
-					</Link>
-				))}
+								<ListItem
+									button
+									sx={{
+										padding: "0 8px",
+										height: "48px",
+										borderRadius: theme.spacing(1.25),
+										backgroundColor:
+											location.pathname === route.to
+												? getOpaque("80")
+												: "transparent",
+									}}
+								>
+									<ListItemIcon
+										color="white"
+										sx={{ minWidth: 0, marginRight: "8px" }}
+									>
+										<Icon sx={{ color: "white" }}>
+											{route.icon}
+										</Icon>
+									</ListItemIcon>
+									<ListItemText
+										primary={route.label}
+										primaryTypographyProps={{
+											fontSize: "20px",
+											color: "white",
+										}}
+									/>
+								</ListItem>
+							</Link>
+						)
+				)}
 			</List>
 			<ListItem
 				button

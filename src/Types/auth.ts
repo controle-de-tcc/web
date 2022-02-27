@@ -14,3 +14,9 @@ export type UserData = {
 	email: string;
 	tipoProfessor?: AdvisorRoles;
 };
+
+export type AuthData = {
+	token: string;
+	userType: UserRoles;
+	user: UserData;
+};

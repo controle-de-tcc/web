@@ -2,6 +2,8 @@ import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { Login } from "Pages/Login";
 import { Home } from "Pages/Home";
 import { Projects } from "Pages/Projects";
+import { Advisors } from "Pages/Advisors";
+import { Students } from "Pages/Students";
 import { useAuth } from "Hooks/useAuth";
 import { Locations } from "Types/routes";
 import { AdvisorRoles } from "Types/auth";
@@ -43,7 +45,11 @@ export const Router = () => {
 				/>
 				<Route
 					path={Locations.Advisors}
-					element={guardRoute(Boolean(isAdvisor), <Projects />)}
+					element={guardRoute(Boolean(isAdvisor), <Advisors />)}
+				/>
+				<Route
+					path={Locations.Students}
+					element={guardRoute(Boolean(isAdvisor), <Students />)}
 				/>
 				<Route path="*" element={<Navigate to={Locations.Login} />} />
 			</Routes>

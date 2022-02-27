@@ -1,37 +1,37 @@
 import { Add } from "@mui/icons-material";
-import { Button, Paper, Typography } from "@mui/material";
+import { Button, capitalize, Paper, Typography } from "@mui/material";
 import { DataGrid, GridColumns } from "@mui/x-data-grid";
-import { NewProject } from "Components/NewProject";
+import { NewAdvisor } from "Components/NewAdvisor";
 import { PageContainer } from "Components/PageContainer";
 import { useSnackbar } from "Hooks/useSnackbar";
 import { useCallback, useEffect, useState } from "react";
 import { client } from "Services";
-import { ProjectListResponse } from "Services/project";
+import { AdvisorListResponse } from "Services/advisor";
 
 const columns: GridColumns = [
-	{ field: "id", headerName: "ID", width: 70 },
-	{ field: "titulo", headerName: "Título", width: 200 },
+	{ field: "siape", headerName: "SIAPE", flex: 1 },
+	{ field: "nome", headerName: "Nome", flex: 2 },
+	{ field: "email", headerName: "E-mail", flex: 3 },
 	{
-		field: "aluno",
-		headerName: "Aluno",
-		minWidth: 200,
+		field: "tipoProfessor",
+		headerName: "Tipo",
 		flex: 1,
-		valueGetter: ({ row }: { row: ProjectListResponse }) =>
-			`${row.aluno.nome}, Matrícula ${row.aluno.matricula}`,
+		valueGetter: ({ row }: { row: AdvisorListResponse }) =>
+			capitalize(row.tipoProfessor),
 	},
 ];
 
-export const Projects = () => {
+export const Advisors = () => {
 	const { toggleSnackbar } = useSnackbar();
 
-	const [projects, setProjects] = useState<Array<ProjectListResponse>>([]);
+	const [advisors, setAdvisors] = useState<Array<AdvisorListResponse>>([]);
 	const [dialogOpen, setDialogOpen] = useState(false);
 
-	const listProjects = useCallback(() => {
-		client.project
+	const listAdvisors = useCallback(() => {
+		client.advisor
 			.list()
 			.then((res) => {
-				setProjects(res);
+				setAdvisors(res);
 			})
 			.catch((err) => {
 				const msg =
@@ -42,28 +42,28 @@ export const Projects = () => {
 	}, [toggleSnackbar]);
 
 	useEffect(() => {
-		listProjects();
-	}, [listProjects]);
+		listAdvisors();
+	}, [listAdvisors]);
 
 	const handleDialog = useCallback(
 		(value: boolean, update = false) => {
 			setDialogOpen(value);
 			if (update) {
-				listProjects();
+				listAdvisors();
 			}
 		},
-		[listProjects]
+		[listAdvisors]
 	);
 
 	return (
-		<PageContainer title="Projetos">
+		<PageContainer title="Professores">
 			<Typography
 				variant="h4"
 				color="primary.main"
 				fontWeight="500"
 				sx={{ marginBottom: "16px" }}
 			>
-				Projetos
+				Professores
 			</Typography>
 			<Button
 				type="button"
@@ -72,19 +72,20 @@ export const Projects = () => {
 				color="primary"
 			>
 				<Add sx={{ marginRight: "8px" }} />
-				Cadastrar novo projeto
+				Cadastrar novo professor
 			</Button>
 			<Paper sx={{ height: "400px", marginTop: "16px" }}>
 				<DataGrid
-					rows={projects}
+					rows={advisors}
 					columns={columns}
 					pageSize={5}
 					rowsPerPageOptions={[5]}
 					checkboxSelection
+					getRowId={(row) => row.siape}
 				/>
 			</Paper>
 			{/* Isso é um dialog */}
-			<NewProject dialogOpen={dialogOpen} handleDialog={handleDialog} />
+			<NewAdvisor dialogOpen={dialogOpen} handleDialog={handleDialog} />
 		</PageContainer>
 	);
 };

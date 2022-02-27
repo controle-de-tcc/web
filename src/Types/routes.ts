@@ -3,4 +3,5 @@ export enum Locations {
 	Home = "/inicio",
 	Projects = "/projetos",
 	Advisors = "/professores",
+	Students = "/alunos",
 }

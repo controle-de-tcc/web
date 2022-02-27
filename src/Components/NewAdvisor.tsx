@@ -1,5 +1,6 @@
 import {
 	Button,
+	capitalize,
 	Container,
 	Dialog,
 	DialogActions,
@@ -14,49 +15,43 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useSnackbar } from "Hooks/useSnackbar";
-import { useCallback, useEffect, useState } from "react";
-import { StudentData } from "Types/student";
+import { useCallback, useState } from "react";
 import { client } from "Services";
+import { AdvisorRoles } from "Types/auth";
 
-type ProjectFormData = {
-	title: string;
-	student: number;
+type AdvisorFormData = {
+	siape: string;
+	email: string;
+	name: string;
+	password: string;
+	type: AdvisorRoles;
 };
 
-const formSchema: yup.SchemaOf<ProjectFormData> = yup.object({
-	title: yup.string().required("Preencha o campo"),
-	student: yup.number().required("Preencha o campo").min(1, "Aluno inválido"),
+const formSchema: yup.SchemaOf<AdvisorFormData> = yup.object({
+	siape: yup.string().required("Preencha o campo"),
+	email: yup.string().required("Preencha o campo").email("E-mail inválido"),
+	name: yup.string().required("Preencha o campo"),
+	password: yup.string().required("Preencha o campo"),
+	type: yup.mixed().oneOf([AdvisorRoles.Advisor, AdvisorRoles.Reviewer]),
 });
 
-type NewProjectProps = {
+type NewAdvisorProps = {
 	dialogOpen: boolean;
 	handleDialog(value: boolean, update?: boolean): void;
 };
 
-export const NewProject = ({ dialogOpen, handleDialog }: NewProjectProps) => {
+export const NewAdvisor = ({ dialogOpen, handleDialog }: NewAdvisorProps) => {
 	const theme = useTheme();
 	const { toggleSnackbar } = useSnackbar();
 
-	const [students, setStudents] = useState<Array<StudentData>>([]);
 	const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
-	useEffect(() => {
-		client.student
-			.list()
-			.then((res) => {
-				setStudents(res);
-			})
-			.catch((err) => {
-				const msg =
-					err.response?.data.msg ??
-					"Algo deu errado, tente novamente";
-				toggleSnackbar(msg);
-			});
-	}, [toggleSnackbar]);
-
 	const defaultValues = {
-		title: "",
-		student: -1,
+		siape: "",
+		name: "",
+		email: "",
+		password: "",
+		type: AdvisorRoles.Advisor,
 	};
 
 	const {
@@ -64,20 +59,23 @@ export const NewProject = ({ dialogOpen, handleDialog }: NewProjectProps) => {
 		handleSubmit,
 		reset,
 		formState: { errors, isSubmitting, isDirty },
-	} = useForm<ProjectFormData>({
+	} = useForm<AdvisorFormData>({
 		resolver: yupResolver(formSchema),
 		defaultValues,
 	});
 
-	const onSubmit = useCallback<SubmitHandler<ProjectFormData>>(
+	const onSubmit = useCallback<SubmitHandler<AdvisorFormData>>(
 		async (values) => {
-			return client.project
+			return client.advisor
 				.create({
-					titulo: values.title,
-					mat_aluno: values.student,
+					siape: parseInt(values.siape),
+					nome: values.name,
+					email: values.email,
+					senha: values.password,
+					tipoProfessor: values.type,
 				})
 				.then(() => {
-					toggleSnackbar("Projeto cadastrado com sucesso");
+					toggleSnackbar("Professor cadastrado com sucesso");
 					handleDialog(false, true);
 				})
 				.catch((err) => {
@@ -111,16 +109,18 @@ export const NewProject = ({ dialogOpen, handleDialog }: NewProjectProps) => {
 						padding: "16px 0",
 					}}
 				>
-					<Typography variant="h6">Cadastrar novo projeto</Typography>
+					<Typography variant="h6">
+						Cadastrar novo professor
+					</Typography>
 					<Controller
 						control={control}
-						name="title"
+						name="siape"
 						render={({ field }) => (
 							<TextField
-								label="Título"
-								error={!!errors.title}
+								label="SIAPE"
+								error={!!errors.siape}
 								helperText={
-									errors.title && errors.title.message
+									errors.siape && errors.siape.message
 								}
 								{...field}
 							/>
@@ -128,29 +128,63 @@ export const NewProject = ({ dialogOpen, handleDialog }: NewProjectProps) => {
 					/>
 					<Controller
 						control={control}
-						name="student"
+						name="name"
 						render={({ field }) => (
 							<TextField
-								label="Aluno"
-								error={!!errors.student}
+								label="Nome"
+								error={!!errors.name}
+								helperText={errors.name && errors.name.message}
+								{...field}
+							/>
+						)}
+					/>
+					<Controller
+						control={control}
+						name="email"
+						render={({ field }) => (
+							<TextField
+								label="E-mail"
+								error={!!errors.email}
 								helperText={
-									errors.student && errors.student.message
+									errors.email && errors.email.message
 								}
-								type="student"
+								type="email"
+								{...field}
+							/>
+						)}
+					/>
+					<Controller
+						control={control}
+						name="password"
+						render={({ field }) => (
+							<TextField
+								label="Senha"
+								error={!!errors.password}
+								helperText={
+									errors.password && errors.password.message
+								}
+								type="password"
+								{...field}
+							/>
+						)}
+					/>
+					<Controller
+						control={control}
+						name="type"
+						render={({ field }) => (
+							<TextField
+								label="Tipo de professor"
+								error={!!errors.type}
+								helperText={errors.type && errors.type.message}
 								select
 								{...field}
 							>
-								<MenuItem value={-1} disabled>
-									Selecione um aluno
+								<MenuItem value={AdvisorRoles.Advisor}>
+									{capitalize(AdvisorRoles.Advisor)}
 								</MenuItem>
-								{students.map((student) => (
-									<MenuItem
-										key={student.matricula}
-										value={student.matricula}
-									>
-										{student.nome} - {student.email}
-									</MenuItem>
-								))}
+								<MenuItem value={AdvisorRoles.Reviewer}>
+									{capitalize(AdvisorRoles.Reviewer)}
+								</MenuItem>
 							</TextField>
 						)}
 					/>
