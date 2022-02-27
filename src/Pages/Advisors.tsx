@@ -1,8 +1,9 @@
 import { Add } from "@mui/icons-material";
-import { Button, capitalize, Paper, Typography } from "@mui/material";
-import { DataGrid, GridColumns } from "@mui/x-data-grid";
+import { Button, capitalize, Typography } from "@mui/material";
+import { GridColumns } from "@mui/x-data-grid";
 import { NewAdvisor } from "Components/NewAdvisor";
 import { PageContainer } from "Components/PageContainer";
+import { Table } from "Components/Table";
 import { useSnackbar } from "Hooks/useSnackbar";
 import { useCallback, useEffect, useState } from "react";
 import { client } from "Services";
@@ -74,16 +75,11 @@ export const Advisors = () => {
 				<Add sx={{ marginRight: "8px" }} />
 				Cadastrar novo professor
 			</Button>
-			<Paper sx={{ minHeight: "400px", marginTop: "16px" }}>
-				<DataGrid
-					rows={advisors}
-					columns={columns}
-					pageSize={5}
-					rowsPerPageOptions={[5]}
-					checkboxSelection
-					getRowId={(row) => row.siape}
-				/>
-			</Paper>
+			<Table
+				rows={advisors}
+				columns={columns}
+				getRowId={(row) => row.siape}
+			/>
 			{/* Isso é um dialog */}
 			<NewAdvisor dialogOpen={dialogOpen} handleDialog={handleDialog} />
 		</PageContainer>

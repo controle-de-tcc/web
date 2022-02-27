@@ -1,8 +1,9 @@
 import { Add } from "@mui/icons-material";
-import { Button, Paper, Typography } from "@mui/material";
-import { DataGrid, GridColumns } from "@mui/x-data-grid";
+import { Button, Typography } from "@mui/material";
+import { GridColumns } from "@mui/x-data-grid";
 import { NewProject } from "Components/NewProject";
 import { PageContainer } from "Components/PageContainer";
+import { Table } from "Components/Table";
 import { useSnackbar } from "Hooks/useSnackbar";
 import { useCallback, useEffect, useState } from "react";
 import { client } from "Services";
@@ -74,15 +75,7 @@ export const Projects = () => {
 				<Add sx={{ marginRight: "8px" }} />
 				Cadastrar novo projeto
 			</Button>
-			<Paper sx={{ minHeight: "400px", marginTop: "16px" }}>
-				<DataGrid
-					rows={projects}
-					columns={columns}
-					pageSize={5}
-					rowsPerPageOptions={[5]}
-					checkboxSelection
-				/>
-			</Paper>
+			<Table rows={projects} columns={columns} />
 			{/* Isso é um dialog */}
 			<NewProject dialogOpen={dialogOpen} handleDialog={handleDialog} />
 		</PageContainer>

@@ -1,6 +1,6 @@
 import { Add } from "@mui/icons-material";
-import { Button, Paper, Typography } from "@mui/material";
-import { DataGrid, GridColumns } from "@mui/x-data-grid";
+import { Button, Typography } from "@mui/material";
+import { GridColumns } from "@mui/x-data-grid";
 import { NewStudent } from "Components/NewStudent";
 import { PageContainer } from "Components/PageContainer";
 import { useSnackbar } from "Hooks/useSnackbar";
@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import { client } from "Services";
 import { StudentListResponse } from "Services/student";
 import dayjs from "dayjs";
+import { Table } from "Components/Table";
 
 const columns: GridColumns = [
 	{ field: "matricula", headerName: "Matrícula", flex: 1 },
@@ -75,16 +76,11 @@ export const Students = () => {
 				<Add sx={{ marginRight: "8px" }} />
 				Cadastrar novo aluno
 			</Button>
-			<Paper sx={{ minHeight: "400px", marginTop: "16px" }}>
-				<DataGrid
-					rows={students}
-					columns={columns}
-					pageSize={5}
-					rowsPerPageOptions={[5]}
-					checkboxSelection
-					getRowId={(row) => row.matricula}
-				/>
-			</Paper>
+			<Table
+				rows={students}
+				columns={columns}
+				getRowId={(row) => row.matricula}
+			/>
 			{/* Isso é um dialog */}
 			<NewStudent dialogOpen={dialogOpen} handleDialog={handleDialog} />
 		</PageContainer>
