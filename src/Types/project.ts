@@ -1,5 +1,5 @@
 export type ProjectData = {
-	id: string;
+	id: number;
 	titulo: string;
 	mat_aluno: number;
 };

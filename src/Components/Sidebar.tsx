@@ -32,6 +32,16 @@ const routes = [
 		hasPermissions: (auth: AuthData) => auth.userType === UserRoles.Advisor,
 	},
 	{
+		icon: <FilePresent />,
+		label: "Meu projeto",
+		to: (mat_aluno: number) =>
+			Locations.ProjectDetails.replace(
+				":mat_aluno",
+				mat_aluno.toString()
+			),
+		hasPermissions: (auth: AuthData) => auth.userType === UserRoles.Student,
+	},
+	{
 		icon: <Person />,
 		label: "Profesores",
 		to: Locations.Advisors,
@@ -114,13 +124,17 @@ export const Sidebar = () => {
 					marginTop: "16px",
 				}}
 			>
-				{routes.map(
-					(route) =>
+				{routes.map((route) => {
+					const to =
+						typeof route.to === "function"
+							? route.to(Number(auth?.user?.matricula))
+							: route.to;
+					return (
 						(!route?.hasPermissions ||
 							(auth && route.hasPermissions(auth))) && (
 							<Link
-								key={route.to}
-								to={route.to}
+								key={to}
+								to={to}
 								style={{ textDecoration: "none" }}
 							>
 								<ListItem
@@ -130,7 +144,7 @@ export const Sidebar = () => {
 										height: "48px",
 										borderRadius: theme.spacing(1.25),
 										backgroundColor:
-											location.pathname === route.to
+											location.pathname === to
 												? getOpaque("80")
 												: "transparent",
 									}}
@@ -153,7 +167,8 @@ export const Sidebar = () => {
 								</ListItem>
 							</Link>
 						)
-				)}
+					);
+				})}
 			</List>
 			<ListItem
 				button

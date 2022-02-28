@@ -21,7 +21,7 @@ export const PageContainer: React.FC<PageContainerProps> = ({
 				sx={{
 					padding: "16px",
 					marginLeft: "280px",
-					height: "100vh",
+					minHeight: "100vh",
 					backgroundColor: getOpaque("40"),
 				}}
 			>
