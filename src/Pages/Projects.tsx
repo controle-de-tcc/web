@@ -10,6 +10,8 @@ import { client } from "Services";
 import { ProjectListResponse } from "Services/project";
 import dayjs from "dayjs";
 import { useAuth } from "Hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { Locations } from "Types/routes";
 
 const columns: GridColumns = [
 	{ field: "id", headerName: "ID", flex: 1 },
@@ -56,6 +58,7 @@ type ProjectsProps = {
 };
 
 export const Projects = ({ isAdvisor }: ProjectsProps) => {
+	const navigate = useNavigate();
 	const { toggleSnackbar } = useSnackbar();
 	const { auth } = useAuth();
 
@@ -113,7 +116,19 @@ export const Projects = ({ isAdvisor }: ProjectsProps) => {
 					Cadastrar novo projeto
 				</Button>
 			)}
-			<Table rows={projects} columns={columns} />
+			<Table
+				rows={projects}
+				columns={columns}
+				onRowDoubleClick={(params) => {
+					const row = params.row as ProjectListResponse;
+					navigate(
+						Locations.ProjectDetails.replace(
+							":mat_aluno",
+							String(row.aluno.matricula)
+						)
+					);
+				}}
+			/>
 			{/* Isso é um dialog */}
 			<NewProject dialogOpen={dialogOpen} handleDialog={handleDialog} />
 		</PageContainer>
