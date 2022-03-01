@@ -40,9 +40,8 @@ export const Login = () => {
 	} = useForm<LoginFormData>({
 		resolver: yupResolver(formSchema),
 		defaultValues: {
-			email: "test@yahu.com" /* -> orientador */,
-			// email: "pedro@yahu.com", /* -> aluno */
-			password: "abc321",
+			email: "",
+			password: " ",
 		},
 	});
 
