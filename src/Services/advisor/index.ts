@@ -28,4 +28,8 @@ export const advisor = {
 
 		return data;
 	},
+
+	async delete(ids: Array<number>): Promise<void> {
+		return api.delete("/orientador", { data: { ids } });
+	},
 };

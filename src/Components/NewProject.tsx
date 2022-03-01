@@ -4,9 +4,6 @@ import {
 	Checkbox,
 	Container,
 	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
 	MenuItem,
 	TextField,
 	Typography,
@@ -28,6 +25,7 @@ import { AdvisorData } from "Types/advisor";
 import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
 import { AdvisorRoles } from "Types/auth";
 import { useAuth } from "Hooks/useAuth";
+import { BaseDialog } from "./BaseDialog";
 
 type ProjectFormData = {
 	title: string;
@@ -252,32 +250,16 @@ export const NewProject = ({ dialogOpen, handleDialog }: NewProjectProps) => {
 					</Button>
 				</Container>
 			</Dialog>
-			<Dialog
+			<BaseDialog
 				open={cancelDialogOpen}
-				onClose={() => setCancelDialogOpen(false)}
-			>
-				<DialogContent>
-					<DialogContentText>
-						Tem certeza que deseja descartar? Você irá perder os
-						dados informados
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setCancelDialogOpen(false)}>
-						Cancelar
-					</Button>
-					<Button
-						onClick={() => {
-							reset(defaultValues);
-							setCancelDialogOpen(false);
-							handleDialog(false);
-						}}
-						color="error"
-					>
-						Descartar
-					</Button>
-				</DialogActions>
-			</Dialog>
+				onCancel={() => setCancelDialogOpen(false)}
+				onConfirm={() => {
+					reset(defaultValues);
+					setCancelDialogOpen(false);
+					handleDialog(false);
+				}}
+				text="Tem certeza que deseja descartar? Você irá perder os dados informados"
+			/>
 		</>
 	);
 };

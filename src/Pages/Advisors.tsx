@@ -32,6 +32,7 @@ export const Advisors = () => (
 		<CRUD<Array<AdvisorListResponse>>
 			title="Professores"
 			renderAdd={() => "Cadastrar novo professor"}
+			onDelete={client.advisor.delete}
 			initialData={[]}
 			getDataService={client.advisor.list}
 			getRows={(data) => data}

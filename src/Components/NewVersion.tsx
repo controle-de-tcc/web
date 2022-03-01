@@ -8,13 +8,11 @@ import {
 	Button,
 	Container,
 	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
 	TextField,
 	Typography,
 	useTheme,
 } from "@mui/material";
+import { BaseDialog } from "./BaseDialog";
 
 type VersionFormData = {
 	file: File;
@@ -133,32 +131,16 @@ export const NewVersion = ({
 					</Button>
 				</Container>
 			</Dialog>
-			<Dialog
+			<BaseDialog
 				open={cancelDialogOpen}
-				onClose={() => setCancelDialogOpen(false)}
-			>
-				<DialogContent>
-					<DialogContentText>
-						Tem certeza que deseja descartar? Você irá perder os
-						dados informados
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setCancelDialogOpen(false)}>
-						Cancelar
-					</Button>
-					<Button
-						onClick={() => {
-							reset(defaultValues);
-							setCancelDialogOpen(false);
-							handleDialog(false);
-						}}
-						color="error"
-					>
-						Descartar
-					</Button>
-				</DialogActions>
-			</Dialog>
+				onCancel={() => setCancelDialogOpen(false)}
+				onConfirm={() => {
+					reset(defaultValues);
+					setCancelDialogOpen(false);
+					handleDialog(false);
+				}}
+				text="Tem certeza que deseja descartar? Você irá perder os dados informados"
+			/>
 		</>
 	);
 };

@@ -24,6 +24,7 @@ export const Students = () => (
 		<CRUD<Array<StudentListResponse>>
 			title="Alunos"
 			renderAdd={() => "Cadastrar novo aluno"}
+			onDelete={client.student.delete}
 			initialData={[]}
 			getDataService={client.student.list}
 			getRows={(data) => data}

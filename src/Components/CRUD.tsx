@@ -1,12 +1,14 @@
-import { Add } from "@mui/icons-material";
-import { Button, Paper, Typography } from "@mui/material";
+import { Add, DeleteOutline } from "@mui/icons-material";
+import { Box, Button, Fade, Paper, Typography } from "@mui/material";
 import { DataGrid, DataGridProps, GridColumns, ptBR } from "@mui/x-data-grid";
 import { useSnackbar } from "Hooks/useSnackbar";
 import { useCallback, useEffect, useState } from "react";
+import { BaseDialog } from "./BaseDialog";
 
 type CRUDProps<DataType> = {
 	title: string;
 	renderAdd(data: DataType): string | null;
+	onDelete?(ids: Array<number>): Promise<void>;
 	renderBody?(data: DataType): JSX.Element;
 	initialData: DataType;
 	getDataService(): Promise<DataType>;
@@ -23,6 +25,7 @@ type CRUDProps<DataType> = {
 export const CRUD = <DataType extends any>({
 	title,
 	renderAdd,
+	onDelete,
 	renderBody,
 	initialData,
 	getDataService,
@@ -35,6 +38,8 @@ export const CRUD = <DataType extends any>({
 
 	const [data, setData] = useState<DataType>(initialData);
 	const [dialogOpen, setDialogOpen] = useState(false);
+	const [selected, setSelected] = useState<Array<any>>([]);
+	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
 	const getData = useCallback(() => {
 		getDataService()
@@ -75,15 +80,28 @@ export const CRUD = <DataType extends any>({
 			</Typography>
 			{renderBody && renderBody(data)}
 			{renderAdd(data) && (
-				<Button
-					type="button"
-					onClick={() => setDialogOpen(true)}
-					variant="contained"
-					color="primary"
-				>
-					<Add sx={{ marginRight: "8px" }} />
-					{renderAdd(data)}
-				</Button>
+				<Box sx={{ display: "flex", gap: "16px" }}>
+					<Button
+						type="button"
+						onClick={() => setDialogOpen(true)}
+						variant="contained"
+						color="primary"
+					>
+						<Add sx={{ marginRight: "8px" }} />
+						{renderAdd(data)}
+					</Button>
+					<Fade in={selected.length > 0}>
+						<Button
+							type="button"
+							onClick={() => setDeleteDialogOpen(true)}
+							variant="contained"
+							color="error"
+						>
+							<DeleteOutline sx={{ marginRight: "8px" }} />
+							Remover registros selecionados
+						</Button>
+					</Fade>
+				</Box>
 			)}
 			<Paper sx={{ height: "80vh", marginTop: "16px" }}>
 				<DataGrid
@@ -95,14 +113,27 @@ export const CRUD = <DataType extends any>({
 					columns={columns}
 					rows={getRows(data)}
 					checkboxSelection
-					onSelectionModelChange={(selected) => {
-						console.log(selected);
-					}}
+					onSelectionModelChange={setSelected}
 					disableSelectionOnClick
 					{...tableProps}
 				/>
 			</Paper>
 			{renderForm(dialogOpen, handleDialog, data)}
+			{/* Diálogo de remoção */}
+			<BaseDialog
+				open={deleteDialogOpen}
+				onCancel={() => setDeleteDialogOpen(false)}
+				onConfirm={() => {
+					if (onDelete) {
+						onDelete(selected).finally(() => {
+							getData();
+							setDeleteDialogOpen(false);
+						});
+					}
+				}}
+				text="Tem certeza que deseja remover os registros selecionados?"
+				confirmText="Confirmar"
+			/>
 		</>
 	);
 };

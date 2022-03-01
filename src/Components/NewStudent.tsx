@@ -2,9 +2,6 @@ import {
 	Button,
 	Container,
 	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
 	TextField,
 	Typography,
 	useTheme,
@@ -15,6 +12,7 @@ import * as yup from "yup";
 import { useSnackbar } from "Hooks/useSnackbar";
 import { useCallback, useMemo, useState } from "react";
 import { client } from "Services";
+import { BaseDialog } from "./BaseDialog";
 
 type StudentFormData = {
 	registration: string;
@@ -178,32 +176,16 @@ export const NewStudent = ({ dialogOpen, handleDialog }: NewStudentProps) => {
 					</Button>
 				</Container>
 			</Dialog>
-			<Dialog
+			<BaseDialog
 				open={cancelDialogOpen}
-				onClose={() => setCancelDialogOpen(false)}
-			>
-				<DialogContent>
-					<DialogContentText>
-						Tem certeza que deseja descartar? Você irá perder os
-						dados informados
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setCancelDialogOpen(false)}>
-						Cancelar
-					</Button>
-					<Button
-						onClick={() => {
-							reset(defaultValues);
-							setCancelDialogOpen(false);
-							handleDialog(false);
-						}}
-						color="error"
-					>
-						Descartar
-					</Button>
-				</DialogActions>
-			</Dialog>
+				onCancel={() => setCancelDialogOpen(false)}
+				onConfirm={() => {
+					reset(defaultValues);
+					setCancelDialogOpen(false);
+					handleDialog(false);
+				}}
+				text="Tem certeza que deseja descartar? Você irá perder os dados informados"
+			/>
 		</>
 	);
 };

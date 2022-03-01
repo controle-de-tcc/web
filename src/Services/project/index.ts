@@ -85,4 +85,8 @@ export const project = {
 			}
 		);
 	},
+
+	async delete(ids: Array<number>): Promise<void> {
+		return api.delete("/projeto", { data: { ids } });
+	},
 };

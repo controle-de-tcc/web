@@ -25,4 +25,8 @@ export const student = {
 
 		return data;
 	},
+
+	async delete(ids: Array<number>): Promise<void> {
+		return api.delete("/aluno", { data: { ids } });
+	},
 };

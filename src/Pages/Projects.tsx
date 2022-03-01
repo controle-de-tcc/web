@@ -61,6 +61,7 @@ export const Projects = ({ isAdvisor }: ProjectsProps) => {
 			<CRUD<Array<ProjectListResponse>>
 				title="Projetos"
 				renderAdd={() => (isAdvisor ? "Cadastrar novo projeto" : null)}
+				onDelete={client.project.delete}
 				initialData={[]}
 				getDataService={getDataService()}
 				getRows={(data) => data}
