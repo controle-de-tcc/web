@@ -1,14 +1,11 @@
-import { Add } from "@mui/icons-material";
-import { Button, capitalize, Typography } from "@mui/material";
+import { capitalize } from "@mui/material";
 import { GridColumns } from "@mui/x-data-grid";
 import { NewAdvisor } from "Components/NewAdvisor";
 import { PageContainer } from "Components/PageContainer";
-import { Table } from "Components/Table";
-import { useSnackbar } from "Hooks/useSnackbar";
-import { useCallback, useEffect, useState } from "react";
 import { client } from "Services";
 import { AdvisorListResponse } from "Services/advisor";
 import dayjs from "dayjs";
+import { CRUD } from "Components/CRUD";
 
 const columns: GridColumns = [
 	{ field: "siape", headerName: "SIAPE", flex: 1 },
@@ -30,66 +27,24 @@ const columns: GridColumns = [
 	},
 ];
 
-export const Advisors = () => {
-	const { toggleSnackbar } = useSnackbar();
-
-	const [advisors, setAdvisors] = useState<Array<AdvisorListResponse>>([]);
-	const [dialogOpen, setDialogOpen] = useState(false);
-
-	const listAdvisors = useCallback(() => {
-		client.advisor
-			.list()
-			.then((res) => {
-				setAdvisors(res);
-			})
-			.catch((err) => {
-				const msg =
-					err.response?.data.msg ??
-					"Algo deu errado, tente novamente";
-				toggleSnackbar(msg);
-			});
-	}, [toggleSnackbar]);
-
-	useEffect(() => {
-		listAdvisors();
-	}, [listAdvisors]);
-
-	const handleDialog = useCallback(
-		(value: boolean, update = false) => {
-			setDialogOpen(value);
-			if (update) {
-				listAdvisors();
-			}
-		},
-		[listAdvisors]
-	);
-
-	return (
-		<PageContainer title="Professores">
-			<Typography
-				variant="h4"
-				color="primary.main"
-				fontWeight="500"
-				sx={{ marginBottom: "16px" }}
-			>
-				Professores
-			</Typography>
-			<Button
-				type="button"
-				onClick={() => setDialogOpen(true)}
-				variant="contained"
-				color="primary"
-			>
-				<Add sx={{ marginRight: "8px" }} />
-				Cadastrar novo professor
-			</Button>
-			<Table
-				rows={advisors}
-				columns={columns}
-				getRowId={(row) => row.siape}
-			/>
-			{/* Isso é um dialog */}
-			<NewAdvisor dialogOpen={dialogOpen} handleDialog={handleDialog} />
-		</PageContainer>
-	);
-};
+export const Advisors = () => (
+	<PageContainer title="Professores">
+		<CRUD<Array<AdvisorListResponse>>
+			title="Professores"
+			renderAdd={() => "Cadastrar novo professor"}
+			initialData={[]}
+			getDataService={client.advisor.list}
+			getRows={(data) => data}
+			columns={columns}
+			tableProps={{
+				getRowId: (row) => row.siape,
+			}}
+			renderForm={(dialogOpen, handleDialog) => (
+				<NewAdvisor
+					dialogOpen={dialogOpen}
+					handleDialog={handleDialog}
+				/>
+			)}
+		/>
+	</PageContainer>
+);

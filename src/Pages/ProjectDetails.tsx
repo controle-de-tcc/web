@@ -1,11 +1,8 @@
-import { Add, Download } from "@mui/icons-material";
-import { Button, Divider, IconButton, Typography } from "@mui/material";
+import { Download } from "@mui/icons-material";
+import { Divider, IconButton, Typography } from "@mui/material";
 import { NewVersion } from "Components/NewVersion";
 import { PageContainer } from "Components/PageContainer";
-import { Table } from "Components/Table";
 import { useAuth } from "Hooks/useAuth";
-import { useSnackbar } from "Hooks/useSnackbar";
-import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { client } from "Services";
 import { ProjectGetResponse } from "Services/project";
@@ -15,6 +12,7 @@ import { GridColumns } from "@mui/x-data-grid";
 import { Locations } from "Types/routes";
 import { VersionData } from "Types/project";
 import { formatReviewers } from "Lib/helpers";
+import { CRUD } from "Components/CRUD";
 
 const columns: GridColumns = [
 	{ field: "id", headerName: "ID", width: 96 },
@@ -55,125 +53,87 @@ export const ProjectDetails = () => {
 	const navigate = useNavigate();
 	const { mat_aluno } = useParams<{ mat_aluno: string }>();
 	const { auth } = useAuth();
-	const { toggleSnackbar } = useSnackbar();
 
-	const [dialogOpen, setDialogOpen] = useState(false);
-	const [project, setProject] = useState<ProjectGetResponse>();
-
-	const getProject = useCallback(() => {
-		client.project
-			.getByStudent(Number(mat_aluno))
-			.then((res) => {
-				setProject(res);
-			})
-			.catch((err) => {
-				const msg =
-					err.response?.data.msg ??
-					"Algo deu errado, tente novamente";
-				toggleSnackbar(msg);
-			});
-	}, [mat_aluno, toggleSnackbar]);
-
-	useEffect(() => {
-		getProject();
-	}, [getProject]);
-
-	const handleDialog = useCallback(
-		(value: boolean, update = false) => {
-			setDialogOpen(value);
-			if (update) {
-				getProject();
-			}
-		},
-		[getProject]
-	);
+	const shouldRenderAdd = () =>
+		auth?.userType === UserRoles.Student &&
+		auth?.user.matricula === Number(mat_aluno);
 
 	return (
-		<PageContainer title={`Projeto - ${project?.titulo}`}>
-			<Typography
-				variant="h4"
-				color="primary.main"
-				fontWeight="500"
-				sx={{ marginBottom: "16px" }}
-			>
-				Detalhes de projeto
-			</Typography>
-			<Divider style={{ margin: "16px 0" }} />
-			<Typography
-				variant="body1"
-				color="black"
-				fontWeight="light"
-				sx={{ marginBottom: "4px" }}
-			>
-				<Typography fontWeight="400">Projeto:</Typography>{" "}
-				{project?.titulo}
-			</Typography>
-			<Typography
-				variant="body1"
-				color="black"
-				fontWeight="light"
-				sx={{ marginBottom: "4px" }}
-			>
-				<Typography fontWeight="400">Orientador:</Typography>{" "}
-				{project?.orientador.nome}
-			</Typography>
-			<Typography variant="body1" color="black" fontWeight="light">
-				<Typography fontWeight="400">Avaliadores:</Typography>{" "}
-				{formatReviewers(project?.avaliadores || [])}
-			</Typography>
-			<Divider style={{ margin: "16px 0" }} />
-			<Typography
-				variant="h6"
-				color="black"
-				fontWeight="light"
-				sx={{ marginBottom: "16px" }}
-			>
-				Histórico de versões
-			</Typography>
-			{auth?.userType === UserRoles.Student &&
-				auth?.user.matricula === Number(mat_aluno) && (
-					<Button
-						type="button"
-						onClick={() => setDialogOpen(true)}
-						variant="contained"
-						color="primary"
-					>
-						<Add sx={{ marginRight: "8px" }} />
-						Submeter nova versão
-					</Button>
+		<PageContainer title="Detalhes do projeto">
+			<CRUD<ProjectGetResponse>
+				title="Detalhes do projeto"
+				renderAdd={() =>
+					shouldRenderAdd() ? "Submeter nova versão" : null
+				}
+				renderBody={(data) => (
+					<>
+						<Divider style={{ margin: "16px 0" }} />
+						<Typography
+							variant="body1"
+							color="black"
+							fontWeight="light"
+							sx={{ marginBottom: "4px" }}
+						>
+							<Typography fontWeight="400">Projeto:</Typography>{" "}
+							{data.titulo}
+						</Typography>
+						<Typography
+							variant="body1"
+							color="black"
+							fontWeight="light"
+							sx={{ marginBottom: "4px" }}
+						>
+							<Typography fontWeight="400">
+								Orientador:
+							</Typography>{" "}
+							{data.orientador?.nome}
+						</Typography>
+						<Typography
+							variant="body1"
+							color="black"
+							fontWeight="light"
+						>
+							<Typography fontWeight="400">
+								Avaliadores:
+							</Typography>{" "}
+							{formatReviewers(data.avaliadores || [])}
+						</Typography>
+						<Divider style={{ margin: "16px 0" }} />
+						<Typography
+							variant="h6"
+							color="black"
+							fontWeight="light"
+							sx={{ marginBottom: "16px" }}
+						>
+							Histórico de versões
+						</Typography>
+					</>
 				)}
-			{project?.versoes.length === 0 ? (
-				<Typography
-					variant="body1"
-					color="black"
-					fontWeight="light"
-					fontStyle="italic"
-					style={{ marginTop: "16px" }}
-				>
-					Ainda não foram submetidas versões
-				</Typography>
-			) : (
-				<Table
-					rows={project?.versoes || []}
-					columns={columns}
-					onRowDoubleClick={(params) => {
+				initialData={{} as ProjectGetResponse}
+				getDataService={() =>
+					client.project.getByStudent(Number(mat_aluno))
+				}
+				getRows={(data) => data.versoes}
+				columns={columns}
+				tableProps={{
+					onRowDoubleClick: (params) => {
 						const row = params.row as VersionData;
 						navigate(
 							Locations.ProjectVersion.replace(
 								":id_projeto",
-								String(project?.id)
+								String(row.id_projeto)
 							).replace(":id_versao", String(row.id))
 						);
-					}}
-				/>
-			)}
-			{project && (
-				<NewVersion
-					dialogOpen={dialogOpen}
-					handleDialog={handleDialog}
-					projectId={project.id}
-				/>
-			)}
+					},
+				}}
+				renderForm={(dialogOpen, handleDialog, data) => (
+					<NewVersion
+						dialogOpen={dialogOpen}
+						handleDialog={handleDialog}
+						projectId={data.id}
+					/>
+				)}
+			/>
 		</PageContainer>
 	);
 };
