@@ -29,7 +29,8 @@ const routes = [
 		icon: <FilePresent />,
 		label: "Projetos",
 		to: Locations.Projects,
-		hasPermissions: (auth: AuthData) => auth.userType === UserRoles.Advisor,
+		hasPermissions: (auth: AuthData) =>
+			auth.userType === UserRoles.Professor,
 	},
 	{
 		icon: <FilePresent />,
@@ -107,7 +108,7 @@ export const Sidebar = () => {
 						fontWeight="light"
 						lineHeight={1.15}
 					>
-						{auth?.userType === "student"
+						{auth?.userType === UserRoles.Student
 							? "Aluno"
 							: auth?.user.tipo_professor === AdvisorRoles.Advisor
 							? "Orientador"

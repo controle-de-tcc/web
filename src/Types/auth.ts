@@ -1,6 +1,6 @@
 export enum UserRoles {
-	Student = "student",
-	Advisor = "advisor",
+	Student = "aluno",
+	Professor = "professor",
 }
 
 export enum AdvisorRoles {
