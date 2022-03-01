@@ -41,7 +41,7 @@ export const Login = () => {
 		resolver: yupResolver(formSchema),
 		defaultValues: {
 			email: "",
-			password: " ",
+			password: "",
 		},
 	});
 
