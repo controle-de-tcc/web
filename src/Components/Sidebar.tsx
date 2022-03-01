@@ -30,7 +30,7 @@ const routes = [
 		label: "Projetos",
 		to: Locations.Projects,
 		hasPermissions: (auth: AuthData) =>
-			auth.userType === UserRoles.Professor,
+			auth.user_type === UserRoles.Professor,
 	},
 	{
 		icon: <FilePresent />,
@@ -40,7 +40,8 @@ const routes = [
 				":mat_aluno",
 				mat_aluno.toString()
 			),
-		hasPermissions: (auth: AuthData) => auth.userType === UserRoles.Student,
+		hasPermissions: (auth: AuthData) =>
+			auth.user_type === UserRoles.Student,
 	},
 	{
 		icon: <Person />,
@@ -108,7 +109,7 @@ export const Sidebar = () => {
 						fontWeight="light"
 						lineHeight={1.15}
 					>
-						{auth?.userType === UserRoles.Student
+						{auth?.user_type === UserRoles.Student
 							? "Aluno"
 							: auth?.user.tipo_professor === AdvisorRoles.Advisor
 							? "Orientador"

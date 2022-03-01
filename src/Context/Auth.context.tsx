@@ -1,5 +1,6 @@
 import { createContext, useEffect, useMemo, useRef, useState } from "react";
 import { LoginResponse } from "Services/auth";
+import { api } from "Services/axiosConfig";
 import { AuthData } from "Types/auth";
 
 type AuthContextData = {
@@ -22,6 +23,9 @@ export const AuthContextProvider: React.FC = ({ children }) => {
 			const savedAuth = localStorage.getItem("auth");
 			if (savedAuth) {
 				const newAuth = JSON.parse(savedAuth);
+				api.defaults.headers.common[
+					"Authorization"
+				] = `Bearer ${newAuth.token}`;
 				setAuth(newAuth);
 				firstRender.current = false;
 			}
@@ -31,12 +35,13 @@ export const AuthContextProvider: React.FC = ({ children }) => {
 	const updateAuth = (data: LoginResponse | null) => {
 		if (data === null) {
 			localStorage.removeItem("auth");
+			delete api.defaults.headers.common["Authorization"];
 			setAuth(null);
 			return;
 		}
 		const newAuth: AuthData = {
 			token: data.token,
-			userType: data.userType,
+			user_type: data.user_type,
 			user:
 				"siape" in data.user
 					? {
@@ -52,6 +57,9 @@ export const AuthContextProvider: React.FC = ({ children }) => {
 					  },
 		};
 		setAuth(newAuth);
+		api.defaults.headers.common[
+			"Authorization"
+		] = `Bearer ${newAuth.token}`;
 		localStorage.setItem("auth", JSON.stringify(newAuth));
 	};
 

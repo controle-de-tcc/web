@@ -55,7 +55,7 @@ export const ProjectDetails = () => {
 	const { auth } = useAuth();
 
 	const hasPermissions = () =>
-		auth?.userType === UserRoles.Student &&
+		auth?.user_type === UserRoles.Student &&
 		auth?.user.matricula === Number(mat_aluno);
 
 	return (

@@ -46,7 +46,7 @@ export const Router = () => {
 				<Route
 					path={Locations.Projects}
 					element={guardRoute(
-						auth?.userType === UserRoles.Professor,
+						auth?.user_type === UserRoles.Professor,
 						<Projects isAdvisor={isAdvisor} />
 					)}
 				/>

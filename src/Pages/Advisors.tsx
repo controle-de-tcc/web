@@ -6,6 +6,7 @@ import { client } from "Services";
 import { AdvisorListResponse } from "Services/advisor";
 import dayjs from "dayjs";
 import { CRUD } from "Components/CRUD";
+import { useAuth } from "Hooks/useAuth";
 
 const columns: GridColumns = [
 	{ field: "siape", headerName: "SIAPE", flex: 1 },
@@ -27,25 +28,30 @@ const columns: GridColumns = [
 	},
 ];
 
-export const Advisors = () => (
-	<PageContainer title="Professores">
-		<CRUD<Array<AdvisorListResponse>>
-			title="Professores"
-			renderAdd={() => "Cadastrar novo professor"}
-			onDelete={client.advisor.delete}
-			initialData={[]}
-			getDataService={client.advisor.list}
-			getRows={(data) => data}
-			columns={columns}
-			tableProps={{
-				getRowId: (row) => row.siape,
-			}}
-			renderForm={(dialogOpen, handleDialog) => (
-				<NewAdvisor
-					dialogOpen={dialogOpen}
-					handleDialog={handleDialog}
-				/>
-			)}
-		/>
-	</PageContainer>
-);
+export const Advisors = () => {
+	const { auth } = useAuth();
+
+	return (
+		<PageContainer title="Professores">
+			<CRUD<Array<AdvisorListResponse>>
+				title="Professores"
+				renderAdd={() => "Cadastrar novo professor"}
+				onDelete={client.advisor.delete}
+				initialData={[]}
+				getDataService={client.advisor.list}
+				getRows={(data) => data}
+				columns={columns}
+				tableProps={{
+					getRowId: (row) => row.siape,
+					isRowSelectable: (row) => row.id !== auth?.user?.siape,
+				}}
+				renderForm={(dialogOpen, handleDialog) => (
+					<NewAdvisor
+						dialogOpen={dialogOpen}
+						handleDialog={handleDialog}
+					/>
+				)}
+			/>
+		</PageContainer>
+	);
+};

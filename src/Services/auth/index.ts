@@ -3,7 +3,7 @@ import { UserData, UserRoles } from "Types/auth";
 
 export type LoginResponse = {
 	token: string;
-	userType: UserRoles;
+	user_type: UserRoles;
 	user: UserData;
 };
 

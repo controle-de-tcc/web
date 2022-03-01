@@ -18,6 +18,6 @@ export type UserData = {
 
 export type AuthData = {
 	token: string;
-	userType: UserRoles;
+	user_type: UserRoles;
 	user: UserData;
 };

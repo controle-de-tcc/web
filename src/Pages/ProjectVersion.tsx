@@ -63,7 +63,7 @@ export const ProjectVersion = () => {
 	const { auth } = useAuth();
 
 	const shouldRenderAdd = (data: VersionGetResponse) =>
-		auth?.userType === UserRoles.Professor &&
+		auth?.user_type === UserRoles.Professor &&
 		(data.projeto?.orientador.siape === auth?.user.siape ||
 			data.projeto?.avaliadores.some(
 				(x) => x.avaliador.siape === auth?.user?.siape
