@@ -67,6 +67,7 @@ export const Projects = ({ isAdvisor }: ProjectsProps) => {
 				getRows={(data) => data}
 				columns={columns}
 				tableProps={{
+					isRowSelectable: () => isAdvisor,
 					onRowDoubleClick: (params) => {
 						const row = params.row as ProjectListResponse;
 						navigate(

@@ -54,7 +54,7 @@ export const ProjectDetails = () => {
 	const { mat_aluno } = useParams<{ mat_aluno: string }>();
 	const { auth } = useAuth();
 
-	const shouldRenderAdd = () =>
+	const hasPermissions = () =>
 		auth?.userType === UserRoles.Student &&
 		auth?.user.matricula === Number(mat_aluno);
 
@@ -63,8 +63,9 @@ export const ProjectDetails = () => {
 			<CRUD<ProjectGetResponse>
 				title="Detalhes do projeto"
 				renderAdd={() =>
-					shouldRenderAdd() ? "Submeter nova versão" : null
+					hasPermissions() ? "Submeter nova versão" : null
 				}
+				onDelete={client.version.delete}
 				renderBody={(data) => (
 					<>
 						<Divider style={{ margin: "16px 0" }} />
@@ -116,6 +117,7 @@ export const ProjectDetails = () => {
 				getRows={(data) => data.versoes}
 				columns={columns}
 				tableProps={{
+					isRowSelectable: () => hasPermissions(),
 					onRowDoubleClick: (params) => {
 						const row = params.row as VersionData;
 						navigate(

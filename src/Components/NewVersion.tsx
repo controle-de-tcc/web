@@ -57,8 +57,8 @@ export const NewVersion = ({
 
 	const onSubmit = useCallback<SubmitHandler<VersionFormData>>(
 		async (values) => {
-			return client.project
-				.createVersion(projectId, values.file)
+			return client.version
+				.create(projectId, values.file)
 				.then(() => {
 					toggleSnackbar("Versão submetida com sucesso");
 					reset(defaultValues);

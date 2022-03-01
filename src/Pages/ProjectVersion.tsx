@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 import { useAuth } from "Hooks/useAuth";
 import { useParams } from "react-router-dom";
 import { client } from "Services";
-import { ProjectVersionGetResponse } from "Services/project";
+import { VersionGetResponse } from "Services/version";
 import { UserRoles } from "Types/auth";
 import { SuggestionData } from "Types/project";
 
@@ -62,7 +62,7 @@ export const ProjectVersion = () => {
 		useParams<{ id_projeto: string; id_versao: string }>();
 	const { auth } = useAuth();
 
-	const shouldRenderAdd = (data: ProjectVersionGetResponse) =>
+	const shouldRenderAdd = (data: VersionGetResponse) =>
 		auth?.userType === UserRoles.Advisor &&
 		(data.projeto?.orientador.siape === auth?.user.siape ||
 			data.projeto?.avaliadores.some(
@@ -71,11 +71,12 @@ export const ProjectVersion = () => {
 
 	return (
 		<PageContainer title="Detalhes da versão">
-			<CRUD<ProjectVersionGetResponse>
+			<CRUD<VersionGetResponse>
 				title="Detalhes da versão"
 				renderAdd={(data) =>
 					shouldRenderAdd(data) ? "Realizar sugestão" : null
 				}
+				onDelete={client.suggestion.delete}
 				renderBody={(data) => (
 					<>
 						<Divider style={{ margin: "16px 0" }} />
@@ -147,12 +148,16 @@ export const ProjectVersion = () => {
 						</Typography>
 					</>
 				)}
-				initialData={{} as ProjectVersionGetResponse}
-				getDataService={() =>
-					client.project.getByVersion(Number(id_versao))
-				}
+				initialData={{} as VersionGetResponse}
+				getDataService={() => client.version.get(Number(id_versao))}
 				getRows={(data) => data.sugestoes}
 				columns={columns}
+				tableProps={{
+					isRowSelectable: (params) => {
+						const row = params.row as SuggestionData;
+						return row.siape_professor === auth?.user?.siape;
+					},
+				}}
 				renderForm={(dialogOpen, handleDialog) => (
 					<NewSuggestion
 						dialogOpen={dialogOpen}

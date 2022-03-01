@@ -62,8 +62,8 @@ export const NewSuggestion = ({
 
 	const onSubmit = useCallback<SubmitHandler<SuggestionFormData>>(
 		async (values) => {
-			return client.project
-				.createSuggestion(versionId, {
+			return client.suggestion
+				.create(versionId, {
 					siape_professor: Number(auth?.user.siape),
 					texto: values.text,
 					arquivo: values.file,
