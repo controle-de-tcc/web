@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { useAuth } from "Hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Locations } from "Types/routes";
+import { formatReviewers } from "Lib/helpers";
 
 const columns: GridColumns = [
 	{ field: "id", headerName: "ID", flex: 1 },
@@ -34,15 +35,7 @@ const columns: GridColumns = [
 		headerName: "Avaliadores",
 		flex: 2,
 		valueGetter: ({ row }: { row: ProjectListResponse }) =>
-			row.avaliadores
-				.map((x) => x.avaliador.nome)
-				.reduce(
-					(acc, cur, idx) =>
-						(acc +=
-							cur +
-							(idx < row.avaliadores.length - 1 ? ", " : "")),
-					""
-				),
+			formatReviewers(row.avaliadores),
 	},
 	{
 		field: "created_at",

@@ -1,5 +1,6 @@
 import { api } from "Services/axiosConfig";
 import { AdvisorData } from "Types/advisor";
+import { SuggestionData, VersionData } from "Types/project";
 import { StudentData } from "Types/student";
 
 export type ProjectCreateBody = {
@@ -14,19 +15,24 @@ export type ProjectListResponse = {
 	titulo: string;
 	aluno: StudentData;
 	orientador: AdvisorData;
-	avaliadores: { avaliador: AdvisorData }[];
+	avaliadores: Array<{ avaliador: AdvisorData }>;
 	created_at: Date;
 	updated_at: Date;
 };
 
 export type ProjectGetResponse = ProjectListResponse & {
-	versoes: {
-		id: number;
-		id_projeto: number;
-		arquivo: string;
-		created_at: Date;
-		updated_at: Date;
-	}[];
+	versoes: Array<VersionData>;
+};
+
+export type ProjectVersionGetResponse = VersionData & {
+	projeto: ProjectListResponse;
+	sugestoes: Array<SuggestionData>;
+};
+
+export type SuggestionCreateBody = {
+	siape_professor: number;
+	texto: string;
+	arquivo: File;
 };
 
 export const project = {
@@ -46,13 +52,37 @@ export const project = {
 		return data;
 	},
 
-	async createVersion(id_projeto: number, file: File): Promise<void> {
+	async createVersion(id_projeto: number, arquivo: File): Promise<void> {
 		const formData = new FormData();
-		formData.append("arquivo", file);
+		formData.append("arquivo", arquivo);
 		return api.post(`/projeto/${id_projeto}/nova-versao`, formData, {
 			headers: {
 				"Content-Type": "multipart/form-data",
 			},
 		});
+	},
+
+	async getByVersion(id_versao: number): Promise<ProjectVersionGetResponse> {
+		const { data } = await api.get(`/projeto/por-versao/${id_versao}`);
+		return data;
+	},
+
+	async createSuggestion(
+		id_versao: number,
+		body: SuggestionCreateBody
+	): Promise<void> {
+		const formData = new FormData();
+		formData.append("siape_professor", String(body.siape_professor));
+		formData.append("texto", body.texto);
+		formData.append("arquivo", body.arquivo);
+		return api.post(
+			`/projeto/versao/${id_versao}/nova-sugestao`,
+			formData,
+			{
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			}
+		);
 	},
 };

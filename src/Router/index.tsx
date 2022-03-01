@@ -8,6 +8,7 @@ import { ProjectDetails } from "Pages/ProjectDetails";
 import { useAuth } from "Hooks/useAuth";
 import { Locations } from "Types/routes";
 import { AdvisorRoles, UserRoles } from "Types/auth";
+import { ProjectVersion } from "Pages/ProjectVersion";
 
 export const Router = () => {
 	const { auth } = useAuth();
@@ -52,6 +53,10 @@ export const Router = () => {
 				<Route
 					path={Locations.ProjectDetails}
 					element={guardRoute(Boolean(auth), <ProjectDetails />)}
+				/>
+				<Route
+					path={Locations.ProjectVersion}
+					element={guardRoute(Boolean(auth), <ProjectVersion />)}
 				/>
 				<Route
 					path={Locations.Advisors}

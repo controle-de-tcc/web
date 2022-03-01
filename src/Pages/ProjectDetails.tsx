@@ -1,17 +1,20 @@
 import { Add, Download } from "@mui/icons-material";
-import { Button, IconButton, Typography } from "@mui/material";
+import { Button, Divider, IconButton, Typography } from "@mui/material";
 import { NewVersion } from "Components/NewVersion";
 import { PageContainer } from "Components/PageContainer";
 import { Table } from "Components/Table";
 import { useAuth } from "Hooks/useAuth";
 import { useSnackbar } from "Hooks/useSnackbar";
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { client } from "Services";
 import { ProjectGetResponse } from "Services/project";
 import { UserRoles } from "Types/auth";
 import dayjs from "dayjs";
 import { GridColumns } from "@mui/x-data-grid";
+import { Locations } from "Types/routes";
+import { VersionData } from "Types/project";
+import { formatReviewers } from "Lib/helpers";
 
 const columns: GridColumns = [
 	{ field: "id", headerName: "ID", width: 96 },
@@ -19,21 +22,21 @@ const columns: GridColumns = [
 		field: "arquivo",
 		headerName: "Arquivo",
 		flex: 1,
-		valueGetter: ({ row }: { row: ProjectGetResponse["versoes"][0] }) =>
-			row.arquivo,
+		valueGetter: ({ row }: { row: VersionData }) => row.arquivo,
 	},
+
 	{
 		field: "created_at",
-		headerName: "Submetido em",
+		headerName: "Submetida em",
 		width: 256,
-		valueGetter: ({ row }: { row: ProjectGetResponse["versoes"][0] }) =>
+		valueGetter: ({ row }: { row: VersionData }) =>
 			dayjs(row.created_at).format("DD/MM/YYYY HH:mm"),
 	},
 	{
 		field: "updated_at",
 		headerName: "Ações",
 		width: 96,
-		renderCell: ({ row }: { row: ProjectGetResponse["versoes"][0] }) => (
+		renderCell: ({ row }: { row: VersionData }) => (
 			<IconButton
 				onClick={() => {
 					window.open(
@@ -47,9 +50,10 @@ const columns: GridColumns = [
 		),
 	},
 ];
-export const ProjectDetails = () => {
-	const { mat_aluno } = useParams<{ mat_aluno: string }>();
 
+export const ProjectDetails = () => {
+	const navigate = useNavigate();
+	const { mat_aluno } = useParams<{ mat_aluno: string }>();
 	const { auth } = useAuth();
 	const { toggleSnackbar } = useSnackbar();
 
@@ -94,14 +98,30 @@ export const ProjectDetails = () => {
 			>
 				Detalhes de projeto
 			</Typography>
+			<Divider style={{ margin: "16px 0" }} />
 			<Typography
-				variant="h6"
+				variant="body1"
 				color="black"
 				fontWeight="light"
-				sx={{ marginBottom: "16px" }}
+				sx={{ marginBottom: "4px" }}
 			>
-				Projeto: {project?.titulo}
+				<Typography fontWeight="400">Projeto:</Typography>{" "}
+				{project?.titulo}
 			</Typography>
+			<Typography
+				variant="body1"
+				color="black"
+				fontWeight="light"
+				sx={{ marginBottom: "4px" }}
+			>
+				<Typography fontWeight="400">Orientador:</Typography>{" "}
+				{project?.orientador.nome}
+			</Typography>
+			<Typography variant="body1" color="black" fontWeight="light">
+				<Typography fontWeight="400">Avaliadores:</Typography>{" "}
+				{formatReviewers(project?.avaliadores || [])}
+			</Typography>
+			<Divider style={{ margin: "16px 0" }} />
 			<Typography
 				variant="h6"
 				color="black"
@@ -122,7 +142,31 @@ export const ProjectDetails = () => {
 						Submeter nova versão
 					</Button>
 				)}
-			<Table rows={project?.versoes || []} columns={columns} />
+			{project?.versoes.length === 0 ? (
+				<Typography
+					variant="body1"
+					color="black"
+					fontWeight="light"
+					fontStyle="italic"
+					style={{ marginTop: "16px" }}
+				>
+					Ainda não foram submetidas versões
+				</Typography>
+			) : (
+				<Table
+					rows={project?.versoes || []}
+					columns={columns}
+					onRowDoubleClick={(params) => {
+						const row = params.row as VersionData;
+						navigate(
+							Locations.ProjectVersion.replace(
+								":id_projeto",
+								String(project?.id)
+							).replace(":id_versao", String(row.id))
+						);
+					}}
+				/>
+			)}
 			{project && (
 				<NewVersion
 					dialogOpen={dialogOpen}
